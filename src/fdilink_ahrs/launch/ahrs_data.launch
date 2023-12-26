@@ -1,0 +1,50 @@
+<launch>
+  <node pkg="fdilink_ahrs" name="ahrs_driver" type="ahrs_driver" output="screen" >
+    <!-- 是否输出debug信息 -->
+    <param name="debug"  value="false"/>
+
+    <param name="port"  value="/dev/ttyUSB0"/>
+
+    <!-- 波特率 -->
+    <param name="baud"  value="921600"/>
+
+    <!-- imu数据话题 -->
+    <!-- MSG_IMU 0X40数据包的数据 --> 
+    <!-- 数据包具体含义，查看【资料包\1.用户手册\2.FDIsystem_通信协议_V21.0823.pdf】 -->
+    <param name="imu_topic"  value="imu"/>
+
+    <!-- 发布的imu话题中的frame_id -->
+    <param name="imu_frame"  value="gyro_link"/>
+
+    <!-- 发布的数据基于不同设备有不同的坐标系 -->
+    <!-- 除了imu的话题数据的姿态都是ned，imu受该参数控制 0-ned | 1-nwu  -->
+    <param name="device_type"  value="0"/> <!-- 0: origin_data, 1: for single imu or ucar in ROS -->
+
+    <!-- 地磁北的yaw角 -->
+    <!-- MSG_AHRS 0X41数据包的数据 -->
+    <param name="mag_pose_2d_topic"  value="/mag_pose_2d"/>
+
+    <!-- 欧拉角 -->
+    <!-- MSG_AHRS 0X41数据包的数据 -->
+    <param name="Euler_angles_pub_"  value="/euler_angles"/>
+
+    <!-- 磁力计磁场强度 -->
+    <!-- MSG_AHRS 0X41数据包的数据 -->
+    <param name="Magnetic_pub_"  value="/magnetic"/>
+
+    <!-- ==================================================== 以下数据没有 -->
+    <!-- gps数据输出话题-->
+    <!-- MSG_GEODETIC_POS 0X5C数据包的数据 -->
+    <param name="gps_topic_" value="/gps/fix"/>
+
+    <!-- 机体系速度数据输出话题-->
+    <!-- MSG_INSGPS 0X42数据包的数据 -->
+    <param name="twist_topic_" value="/system_speed"/>
+
+    <!-- NED系位移和速度数据输出话题-->
+    <!-- MSG_INSGPS 0X42数据包的数据 -->
+    <param name="NED_odom_topic_" value="/NED_odometry"/>
+
+  </node>
+
+</launch> 

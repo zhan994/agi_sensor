@@ -1,0 +1,28 @@
+<launch>
+  <node pkg="fdilink_ahrs" name="ahrs_driver" type="ahrs_driver" output="screen">
+    <!-- 是否输出debug信息 -->
+    <param name="debug" value="false"/>
+    <param name="port" value="/dev/ttyUSB0"/>
+    <param name="baud" value="921600"/>
+    <param name="imu_topic" value="imu"/>
+    <param name="imu_frame" value="gyro_link"/>
+    <param name="device_type" value="0"/>
+    <param name="mag_pose_2d_topic" value="/mag_pose_2d"/>
+    <param name="Euler_angles_pub_" value="/euler_angles"/>
+    <param name="Magnetic_pub_" value="/magnetic"/>
+    <!-- ==================================================== 以下数据没有 -->
+    <param name="gps_topic_" value="/gps/fix"/>
+    <param name="twist_topic_" value="/system_speed"/>
+    <param name="NED_odom_topic_" value="/NED_odometry"/>
+  </node>
+  <node name="usb_cam" pkg="usb_cam" type="usb_cam_node" output="screen">
+    <param name="video_device" value="/dev/video0" />
+    <param name="image_width" value="640" />
+    <param name="image_height" value="480" />
+    <param name="framerate" value="20" />
+    <param name="pixel_format" value="mjpeg" />
+    <param name="color_format" value="yuv422p" />
+    <param name="camera_frame_id" value="usb_cam" />
+    <param name="io_method" value="mmap"/>
+  </node>
+</launch>
