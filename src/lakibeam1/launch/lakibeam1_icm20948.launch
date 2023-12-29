@@ -1,0 +1,54 @@
+<launch>
+  <node name="richbeam_lidar" pkg="lakibeam1" type="lakibeam1_scan_node" output="screen">
+    <remap from="/richbeam_lidar/scan" to="/scan" />
+    <param name="frame_id" type="string" value="laser"/>
+    <param name="output_topic" type="string" value="scan" />
+
+    <!--配置是否倒装,true倒装-->
+    <param name="inverted" type="bool" value="false"/>
+    <!--配置本机监听地址，0.0.0.0表示监听全部-->
+    <param name="hostip" type="string" value="0.0.0.0"/>
+    <!--配置sensor地址-->
+    <param name="sensorip" type="string" value="192.168.198.2"/>
+    <!--配置本机监听端口-->
+    <param name="port" type="string" value="2368"/>
+    <!--配置点云旋转角度，可以是负数-->
+    <param name="angle_offset" type="int" value="0"/>
+
+    <!--配置扫描频率，范围：10、20、25、30-->
+    <param name="scanfreq" type="string" value="30" />
+    <!--配置滤波选项，范围：3、2、1、0 -->
+    <param name="filter" type="string" value="3" />
+    <!--雷达扫描使能，范围：true、false-->
+    <param name="laser_enable" type="string" value="true" />
+    <!--雷达扫描范围：45~315, 结束角度必须大于起始角度-->
+    <param name="scan_range_start" type="string" value="45" />
+    <param name="scan_range_stop" type="string" value="315" />
+  </node>
+
+  <arg name="port" default="sensor_imu"/>
+  <arg name="device_frame" default="imu_module_frame" />
+  <arg name="imu_frame" default="imu_frame" />
+  <arg name="mag_frame" default="mag_frame" />
+  <arg name="imu_topic" default="imu" />
+  <arg name="mag_topic" default="mag" />
+  <arg name="imu_freq" default="200" />
+  <arg name="mag_freq" default="70" />
+  <arg name="gravity" default="true" />
+
+  <node name="sensor_imu" pkg="icm20948" type="sensor_imu.py" output="screen">
+    <param name="baudrate" value="115200"/>
+    <param name="port" value='/dev/$(arg port)'/>
+    <param name="imu_id" value="$(arg imu_frame)"/>
+    <param name="imu_topic" value="$(arg imu_topic)"/>
+    <param name="imu_freq" value="$(arg imu_freq)"/>
+    <param name="mag_id" value="$(arg mag_frame)"/>
+    <param name="mag_topic" value="$(arg mag_topic)"/>
+    <param name="mag_freq" value="$(arg mag_freq)"/>
+    <param name="gravity" value="$(arg gravity)"/>
+  </node>
+
+  <node pkg="tf" type="static_transform_publisher" name="module_to_imu" args="0.007 0.0 0.0 0.0 0.0 0.0 $(arg device_frame) $(arg imu_frame) 20" />
+  <node pkg="tf" type="static_transform_publisher" name="module_to_mag" args="0.007 0.0 0.0 0.0 0.0 0.0 $(arg device_frame) $(arg mag_frame) 20" />
+
+</launch>
