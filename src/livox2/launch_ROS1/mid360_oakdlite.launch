@@ -1,0 +1,86 @@
+<launch>
+
+  <!--user configure parameters for ros start-->
+  <arg name="lvx_file_path" default="livox_test.lvx"/>
+  <arg name="bd_list" default="47MDLA70020084"/>
+  <arg name="xfer_format" default="1"/>
+  <arg name="multi_topic" default="0"/>
+  <arg name="data_src" default="0"/>
+  <arg name="publish_freq" default="10.0"/>
+  <arg name="output_type" default="0"/>
+  <arg name="rviz_enable" default="false"/>
+  <arg name="rosbag_enable" default="false"/>
+  <arg name="cmdline_arg" default="$(arg bd_list)"/>
+  <arg name="msg_frame_id" default="livox_frame"/>
+  <arg name="lidar_bag" default="true"/>
+  <arg name="imu_bag" default="true"/>
+  <!--user configure parameters for ros end-->
+
+  <param name="xfer_format" value="$(arg xfer_format)"/>
+  <param name="multi_topic" value="$(arg multi_topic)"/>
+  <param name="data_src" value="$(arg data_src)"/>
+  <param name="publish_freq" type="double" value="$(arg publish_freq)"/>
+  <param name="output_data_type" value="$(arg output_type)"/>
+  <param name="cmdline_str" type="string" value="$(arg bd_list)"/>
+  <param name="cmdline_file_path" type="string" value="$(arg lvx_file_path)"/>
+  <param name="user_config_path" type="string" value="$(find livox_ros_driver2)/config/MID360_config.json"/>
+  <param name="frame_id" type="string" value="$(arg msg_frame_id)"/>
+  <param name="enable_lidar_bag" type="bool" value="$(arg lidar_bag)"/>
+  <param name="enable_imu_bag" type="bool" value="$(arg imu_bag)"/>
+
+  <node name="livox_lidar_publisher2" pkg="livox_ros_driver2" type="livox_ros_driver2_node" required="true" output="screen" args="$(arg cmdline_arg)"/>
+
+  <!-- <args for urdf/> -->
+  <arg name="camera_model" default="OAK-D-LITE" />
+  <arg name="tf_prefix" default="oak" />
+  <arg name="mode" default="depth" />
+  <arg name="base_frame" default="oak-d_frame" />
+  <arg name="parent_frame" default="oak-d-base-frame" />
+
+  <!-- Pose respect to base frame (i.e. "base_link) -->
+  <arg name="cam_pos_x" default="0.0" />
+  <arg name="cam_pos_y" default="0.0" />
+  <arg name="cam_pos_z" default="0.0" />
+  <arg name="cam_roll" default="0.0" />
+  <arg name="cam_pitch" default="0.0" />
+  <arg name="cam_yaw" default="0.0" />
+
+  <arg name="confidence" default="200" />
+  <arg name="LRchecktresh" default="5" />
+  <arg name="lrcheck" default="true" />
+  <arg name="extended" default="false" />
+  <arg name="subpixel" default="true" />
+  <arg name="monoResolution" default="720p" />
+  <arg name="camera_param_uri" default="package://depthai_examples/params/camera" />
+
+  <include file="$(find depthai_descriptions)/launch/urdf.launch">
+    <arg name="base_frame" value="$(arg  base_frame)" />
+    <arg name="parent_frame" value="$(arg  parent_frame)"/>
+    <arg name="camera_model" value="$(arg  camera_model)"/>
+    <arg name="tf_prefix" value="$(arg  tf_prefix)" />
+    <arg name="cam_pos_x" value="$(arg  cam_pos_x)" />
+    <arg name="cam_pos_y" value="$(arg  cam_pos_y)" />
+    <arg name="cam_pos_z" value="$(arg  cam_pos_z)" />
+    <arg name="cam_roll" value="$(arg  cam_roll)" />
+    <arg name="cam_pitch" value="$(arg  cam_pitch)" />
+    <arg name="cam_yaw" value="$(arg  cam_yaw)" />
+  </include>
+
+  <!-- launch-prefix="xterm -e gdb (add [- - args] without space) -->
+  <node name="stereo_publisher" pkg="depthai_examples" type="stereo_node" output="screen" required="true">
+    <param name="tf_prefix" value="$(arg tf_prefix)"/>
+    <param name="camera_param_uri" value="$(arg camera_param_uri)"/>
+    <param name="mode" value="$(arg mode)"/>
+    <param name="lrcheck" value="$(arg lrcheck)"/>
+    <param name="extended" value="$(arg extended)"/>
+    <param name="subpixel" value="$(arg subpixel)"/>
+    <param name="confidence" value="$(arg confidence)"/>
+    <param name="LRchecktresh" value="$(arg LRchecktresh)"/>
+    <param name="monoResolution" value="$(arg monoResolution)"/>
+  </node>
+
+  <group if="$(arg rosbag_enable)">
+    <node pkg="rosbag" type="record" name="record" output="screen" args="-a"/>
+  </group>
+
+</launch>
