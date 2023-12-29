@@ -4,3 +4,4 @@
 - `fdilink_ahrs`用于飞迪9轴`IMU`
 - `icm20948`用于`DIY`9轴`IMU`
 - `livox2`用于`livox mid360`
+- `lakibeam1`用于锐驰`2D LiDAR`
