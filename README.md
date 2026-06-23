@@ -11,7 +11,7 @@
 ```bash
 mkdir -p NanoBot/src
 cd NanoBot/src
-git clone git@github.com:zhan994/NanoBot_SDK.git
+git clone git@github.com:zhan994/nanobot_sdk.git
 cd ..
 catkin_make
 ```
